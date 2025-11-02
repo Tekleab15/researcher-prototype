@@ -1,14 +1,14 @@
 from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
 from config import DEFAULT_MODEL
-
+from datetime import datetime
+from typing import Optional, List
 
 class PersonalityConfig(BaseModel):
     """Configuration for AI personality."""
     style: str = "helpful"
     tone: str = "friendly"
     additional_traits: Optional[Dict[str, Any]] = {}
-
 
 class ContentPreferences(BaseModel):
     """User content preferences."""
@@ -21,7 +21,6 @@ class ContentPreferences(BaseModel):
         "industry_reports": 0.6
     }
     topic_categories: Dict[str, float] = {}
-
 
 class FormatPreferences(BaseModel):
     """User format preferences."""
@@ -161,3 +160,16 @@ class UserProfile(BaseModel):
     metadata: Optional[Dict[str, Any]] = {}
     personality: PersonalityConfig
     preferences: Optional[PreferencesConfig] = None
+    
+class SearchSource(BaseModel):
+    """A source for searching information."""
+    source_name: str
+    url: str
+    title: str
+    content: str
+    published_at: Optional[datetime] = None  
+    freshness_score: Optional[float] = None   
+    confidence_score: Optional[float] = None  
+    # Assuming the fabrication risk: "High", "Medium", "Low"
+    fabrication_risk: str = "High"
+    corroboration: List[str] = []
