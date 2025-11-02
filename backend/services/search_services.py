@@ -141,6 +141,10 @@ class PerplexitySearchService(BaseSearchService):
 
             if response.status_code == 200:
                 response_data = response.json()
+                
+                # This logger is to add functionalities to the output format of Perplexity
+                logger.info(f"Perplexity DEBUG RESPONSE: {response_data}")
+                
                 search_result = response_data["choices"][0]["message"]["content"]
                 citations = response_data.get("citations", [])
                 search_results = response_data.get("search_results", [])
