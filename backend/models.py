@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional, Dict, Any, List
 from config import DEFAULT_MODEL
 from datetime import datetime
@@ -166,3 +166,23 @@ class SearchSource(BaseModel):
     # Assuming the fabrication risk: "High", "Medium", "Low"
     fabrication_risk: str = "High"
     corroboration: List[str] = []
+    
+class VerificationResult(BaseModel):
+    """Structured output for a cross-verification check"""
+    confidence_score: float = Field(
+        description="A score from 0.0 (no support) to 1.0 (fully supported) "
+                    "on whether the evidence supports the primary claim.",
+        ge=0.0, 
+        le=1.0
+    )
+    fabrication_risk: str = Field(
+        description="Estimated risk of fabrication: 'Low', 'Medium', or 'High'."
+    )
+    reasoning: str = Field(
+        description="A brief, one-sentence explanation for the score."
+    )
+    @field_validator('fabrication_risk')
+    def validate_fabrication_risk(cls, v):
+        if v not in ['Low', 'Medium', 'High']:
+            raise ValueError("Fabrication risk must be 'Low', 'Medium', or 'High'")
+        return v
